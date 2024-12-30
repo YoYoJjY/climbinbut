@@ -1,0 +1,51 @@
+-- Create the ScreenGui and Button
+local player = game:GetService("Players").LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+local button = Instance.new("TextButton")
+
+-- Set up the ScreenGui
+screenGui.Parent = player:WaitForChild("PlayerGui")
+screenGui.Name = "ClimbingGui"
+
+-- Set up the Button
+button.Size = UDim2.new(0, 200, 0, 50) -- Width: 200px, Height: 50px
+button.Position = UDim2.new(0.8, -1000, 0, 10) -- Center the button on the screen
+button.Text = "Toggle Climbing"
+button.Parent = screenGui
+
+-- Variables
+local isClimbing = false
+local tracker = nil
+
+-- Button Functionality
+button.MouseButton1Click:Connect(function()
+    isClimbing = not isClimbing -- Toggle climbing state
+
+    if isClimbing then
+        -- Climbing activated
+        button.Text = "Climbing: ON"
+
+        if tracker then
+            tracker:Destroy()
+        end
+
+        local instance = Instance.new("Part")
+        tracker = instance
+
+        -- Start climbing loop
+        while isClimbing do
+            task.wait()
+            instance.Parent = workspace
+            instance.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0, -5, 0)
+            instance.Anchored = true
+        end
+    else
+        -- Climbing deactivated
+        button.Text = "Climbing: OFF"
+
+        if tracker then
+            tracker:Destroy()
+            tracker = nil
+        end
+    end
+end)
